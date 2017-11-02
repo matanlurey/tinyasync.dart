@@ -40,6 +40,16 @@ class Zone {
     return () => run(callback);
   }
 
+  /// Creates a [Timer] bound to this zone.
+  Timer createTimer(Duration duration, void Function() callback) {
+    return _spec.createTimer(parent, duration, bindCallback(callback));
+  }
+
+  /// Creates a periodic [Timer] bound to this zone.
+  Timer createPeriodicTimer(Duration duration, void Function() callback) {
+    return _spec.createPeriodicTimer(parent, duration, bindCallback(callback));
+  }
+
   /// Executes [body] with [Zone.current] set to _this_ [Zone].
   R run<R>(R Function() body) {
     final restore = _current;
@@ -93,6 +103,16 @@ class _RootZone extends Zone {
   const _RootZone() : super._(const {}, null, null);
 
   @override
+  Timer createTimer(Duration duration, void Function() callback) {
+    return new _JsTimer(duration, callback);
+  }
+
+  @override
+  Timer createPeriodicTimer(Duration duration, void Function() callback) {
+    return new _JsPeriodicTimer(duration, callback);
+  }
+
+  @override
   void print(String line) => runtime.nativePrint(line);
 
   @override
@@ -112,6 +132,18 @@ class _RootZone extends Zone {
 
 /// Provides a specification for a forked zone.
 class ZoneSpecification {
+  static Timer _createTimer(Zone zone, Duration duration, void Function() fn) {
+    return zone.createTimer(duration, fn);
+  }
+
+  static Timer _createPeriodicTimer(
+    Zone zone,
+    Duration duration,
+    void Function() fn,
+  ) {
+    return zone.createPeriodicTimer(duration, fn);
+  }
+
   static void _print(Zone zone, String message) {
     zone.print(message);
   }
@@ -120,10 +152,14 @@ class ZoneSpecification {
     zone.scheduleMicrotask(body);
   }
 
+  final Timer Function(Zone, Duration, void Function()) createTimer;
+  final Timer Function(Zone, Duration, void Function()) createPeriodicTimer;
   final void Function(Zone, String) print;
-  final void Function(Zone, void Function() body) scheduleMicrotask;
+  final void Function(Zone, void Function()) scheduleMicrotask;
 
   const ZoneSpecification({
+    this.createTimer: _createTimer,
+    this.createPeriodicTimer: _createPeriodicTimer,
     this.print: _print,
     this.scheduleMicrotask: _scheduleMicrotask,
   });

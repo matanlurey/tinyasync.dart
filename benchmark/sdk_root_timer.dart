@@ -2,8 +2,9 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'src/runtime/js.dart' as runtime;
+import 'dart:async';
 
-part 'src/schedule_microtask.dart';
-part 'src/timer.dart';
-part 'src/zone.dart';
+/// Tests the size of using [Timer.run] from `dart:async`.
+void main() {
+  Timer.run(() {});
+}

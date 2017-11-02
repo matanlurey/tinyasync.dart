@@ -27,7 +27,7 @@ Future<Null> main() async {
       );
       final process = await manager.spawn('node', [patch.path]);
       await process.exitCode;
-      file.deleteSync();
+      patch.deleteSync();
     }
   }
   exit(0);

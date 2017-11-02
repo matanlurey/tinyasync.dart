@@ -30,3 +30,23 @@ abstract class _Promise<T> {
 
   _Promise<T> then(void Function(T result) fn);
 }
+
+int setTimeout(void Function() fn, int delayMs) {
+  return _setTimeout(allowInterop(fn), delayMs);
+}
+
+@JS('setTimeout')
+external int _setTimeout(void Function() fn, int delayMs);
+
+@JS('clearTimeout')
+external void clearTimeout(int timeoutId);
+
+int setInterval(void Function() fn, int delayMs) {
+  return _setInterval(allowInterop(fn), delayMs);
+}
+
+@JS('setInterval')
+external int _setInterval(void Function() fn, int delayMs);
+
+@JS('clearInterval')
+external void clearInterval(int timeoutId);
