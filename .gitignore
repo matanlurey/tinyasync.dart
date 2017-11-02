@@ -1,0 +1,6 @@
+.pub/
+.packages
+pubspec.lock
+
+# Ignore result of `pub build`.
+build/
