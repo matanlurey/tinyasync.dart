@@ -30,9 +30,27 @@ void main() {
     expect(Zone.current, root);
   });
 
+  test('should catch errors on runGuarded', () {
+    final errors = <Object>[];
+    final root = Zone.root;
+    final child = root.fork(
+      specification: new ZoneSpecification(
+        handleUncaughtError: (_, e, __) => errors.add(e),
+      ),
+    );
+    expect(Zone.current, root);
+    child.runGuarded(() {
+      expect(Zone.current, child);
+      throw new IntentionalException();
+    });
+    expect(errors, hasLength(1));
+  });
+
   test('should set current zone on bindCallback', () {
     final child = Zone.root.fork();
     final callback = child.bindCallback(() => Zone.current);
     expect(callback(), child);
   });
 }
+
+class IntentionalException implements Exception {}

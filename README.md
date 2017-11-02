@@ -20,7 +20,6 @@ Disclaimer: This is not an official Google or Dart project.
 * Most exceptions are developer-mode only (i.e. when `assert` is enabled).
 
 ### TODO
-* [ ] Add `Zone.runGuarded`, `Zone.bindGuardedCallback`, and use it.
 * [ ] Add `Completer`, `Future`.
 * [ ] Add `Stream`, `StreamController`.
 
@@ -29,17 +28,17 @@ To reproduce, `git clone`, and run `pub build benchmark`, and look in `build/`.
 
 | Name                            | SDK (`dart:async`)  | Experiment (`package:tinyasync`) | Difference          |
 | ------------------------------- | ------------------- | -------------------------------- | ------------------- |
-| (Root) scheduleMicrotask        | 63.6Kb              | 42.2Kb                           | **-21.4Kb** (33%)   |
+| (Root) scheduleMicrotask        | 63.6Kb              | 42.5Kb                           | **-21.1Kb** (33%)   |
 | (Root) Timer.run                | 63.3Kb              | 42.5Kb                           | **-20.8Kb** (33%)   |
-| (Fork) scheduleMicrotask        | 71.3Kb              | 42.8Kb                           | **-28.5Kb** (40%)   |
-| (Fork) Timer.run                | 71.2Kb              | 44.6Kb                           | **-26.6Kb** (38%)   |
+| (Fork) scheduleMicrotask        | 71.3Kb              | 48.8Kb                           | **-22.5Kb** (32%)   |
+| (Fork) Timer.run                | 71.2Kb              | 49.7Kb                           | **-21.5Kb** (31%)   |
 
 ## References
 * [Source code for `dart:async`](https://github.com/dart-lang/sdk/tree/master/sdk/lib/async)
 * [Source code for `zone.js`](https://github.com/angular/zone.js/)
 
 ## Contributing
-To run the size calculations, first run `pub build`, and then:
+To run the size calculations, first run `pub build benchmark`, and then:
 
 ```bash
 $ dart tool/benchmark.dart

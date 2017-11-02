@@ -40,14 +40,23 @@ class Zone {
     return () => run(callback);
   }
 
+  /// Returns [callback] wrapped to execute in this zone when invoked.
+  void Function() bindCallbackGuarded(void Function() callback) {
+    return () => runGuarded(callback);
+  }
+
   /// Creates a [Timer] bound to this zone.
   Timer createTimer(Duration duration, void Function() callback) {
-    return _spec.createTimer(parent, duration, bindCallback(callback));
+    return _spec.createTimer(parent, duration, bindCallbackGuarded(callback));
   }
 
   /// Creates a periodic [Timer] bound to this zone.
   Timer createPeriodicTimer(Duration duration, void Function() callback) {
-    return _spec.createPeriodicTimer(parent, duration, bindCallback(callback));
+    return _spec.createPeriodicTimer(
+      parent,
+      duration,
+      bindCallbackGuarded(callback),
+    );
   }
 
   /// Executes [body] with [Zone.current] set to _this_ [Zone].
@@ -63,12 +72,28 @@ class Zone {
     }
   }
 
+  /// Executes [body] with [Zone.current] set to _this_ [Zone].
+  ///
+  /// On a synchronous error, invokes [handleUncaughtError].
+  void runGuarded(void Function() body) {
+    try {
+      run(body);
+    } catch (e, s) {
+      handleUncaughtError(e, s);
+    }
+  }
+
+  /// Invoked when an uncaught exception is caught in this zone.
+  void handleUncaughtError(Object error, StackTrace trace) {
+    _spec.handleUncaughtError(parent, error, trace);
+  }
+
   /// Prints the given [line].
   void print(String line) => _spec.print(parent, line);
 
   /// Runs [callback] asynchronously in this zone.
   void scheduleMicrotask(void Function() callback) {
-    _spec.scheduleMicrotask(parent, bindCallback(callback));
+    _spec.scheduleMicrotask(parent, bindCallbackGuarded(callback));
   }
 
   /// Returns the result of looking up [key] in `zoneValues`.
@@ -113,6 +138,11 @@ class _RootZone extends Zone {
   }
 
   @override
+  void handleUncaughtError(Object error, StackTrace trace) {
+    runtime.nativeRethrow(error, trace);
+  }
+
+  @override
   void print(String line) => runtime.nativePrint(line);
 
   @override
@@ -144,6 +174,10 @@ class ZoneSpecification {
     return zone.createPeriodicTimer(duration, fn);
   }
 
+  static void _handleUncaughtError(Zone zone, Object error, StackTrace trace) {
+    return zone.handleUncaughtError(error, trace);
+  }
+
   static void _print(Zone zone, String message) {
     zone.print(message);
   }
@@ -154,12 +188,14 @@ class ZoneSpecification {
 
   final Timer Function(Zone, Duration, void Function()) createTimer;
   final Timer Function(Zone, Duration, void Function()) createPeriodicTimer;
+  final void Function(Zone, Object, StackTrace) handleUncaughtError;
   final void Function(Zone, String) print;
   final void Function(Zone, void Function()) scheduleMicrotask;
 
   const ZoneSpecification({
     this.createTimer: _createTimer,
     this.createPeriodicTimer: _createPeriodicTimer,
+    this.handleUncaughtError: _handleUncaughtError,
     this.print: _print,
     this.scheduleMicrotask: _scheduleMicrotask,
   });

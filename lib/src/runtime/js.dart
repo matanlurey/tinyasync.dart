@@ -6,6 +6,7 @@
 library tinyasync.src.runtime.js;
 
 import 'package:js/js.dart';
+import 'package:js/js_util.dart';
 
 /// Implementation of `print` in the JS runtime.
 void nativePrint(String message) => _console.log(message);
@@ -22,6 +23,13 @@ abstract class _Console {
 /// Implementation of `scheduleMicrotask` in the JS runtime.
 void nativeScheduleMicrotask(void Function() fn) {
   _Promise.resolve(0).then(allowInterop((_) => fn()));
+}
+
+/// Implementation of `_rethrow` in the JS runtime.
+void nativeRethrow(Object error, StackTrace trace) {
+  setProperty(error, 'stack', trace.toString());
+  // ignore: only_throw_errors
+  throw error;
 }
 
 @JS('Promise')

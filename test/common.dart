@@ -11,3 +11,7 @@ Future<Null> nextNativeMicrotask() {
   nativeScheduleMicrotask(completer.complete);
   return completer.future;
 }
+
+Future<Null> nextNativeEventLoop() {
+  return new Future(() => null);
+}
