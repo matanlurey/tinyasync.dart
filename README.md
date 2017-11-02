@@ -32,6 +32,12 @@ To reproduce, `git clone`, and run `pub build benchmark`, and look in `build/`.
 * [Source code for `zone.js`](https://github.com/angular/zone.js/)
 
 ## Contributing
+To run the size calculations, first run `pub build`, and then:
+
+```bash
+$ dart tool/benchmark.dart
+```
+
 To run the test cases using `dart2js`:
 
 ```bash
