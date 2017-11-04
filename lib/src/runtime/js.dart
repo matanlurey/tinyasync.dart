@@ -2,6 +2,11 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+/// Normally the SDK has access to "special" low-level/platform features.
+///
+/// We don't at the 'package: ...' level, so instead we _emulate_ the features
+/// the best we can with JS-interop. In practice, this shouldn't be much worse
+/// than how it is implemented in DDC or Dart2JS today.
 @JS()
 library tinyasync.src.runtime.js;
 
