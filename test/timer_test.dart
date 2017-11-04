@@ -5,7 +5,7 @@
 import 'package:test/test.dart';
 import 'package:tinyasync/tinyasync.dart';
 
-import 'common.dart';
+import '_common.dart';
 
 void main() {
   test('should schedule a timer', () async {

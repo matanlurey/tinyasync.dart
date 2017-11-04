@@ -26,7 +26,6 @@ linter:
     - avoid_init_to_null
     - avoid_return_types_on_setters
     - camel_case_types
-    - cascade_invocations
     - constant_identifier_names
     - directives_ordering
     - empty_catches

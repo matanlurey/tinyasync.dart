@@ -4,7 +4,11 @@
 
 import 'dart:async';
 
+import '../_common.dart';
+
 /// Tests the size of using [Timer.run] from `dart:async`.
 void main() {
-  Zone.current.fork().createTimer(Duration.ZERO, () {});
+  benchAsync('Zone.current.fork().createTuner', (onDone) {
+    Zone.current.fork().createTimer(Duration.ZERO, onDone);
+  });
 }

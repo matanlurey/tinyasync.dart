@@ -4,7 +4,11 @@
 
 import 'package:tinyasync/tinyasync.dart';
 
-/// Tests the size of using [Timer.run] from `package:tinyasync`.
+import '../_common.dart';
+
+/// Tests the size of using [scheduleMicrotask] from `package:tinyasync`.
 void main() {
-  Timer.run(() {});
+  benchAsync('scheduleMicrotask', (onDone) {
+    scheduleMicrotask(onDone);
+  });
 }

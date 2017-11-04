@@ -4,7 +4,11 @@
 
 import 'package:tinyasync/tinyasync.dart';
 
-/// Tests the size of using [scheduleMicrotask] from `package:tinyasync`.
+import '../_common.dart';
+
+/// Tests the size of using [Timer.run] from `package:tinyasync`.
 void main() {
-  Zone.current.fork().scheduleMicrotask(() {});
+  benchAsync('Zone.current.fork().createTuner', (onDone) {
+    Zone.current.fork().createTimer(Duration.ZERO, onDone);
+  });
 }

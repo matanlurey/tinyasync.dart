@@ -24,14 +24,20 @@ Disclaimer: This is not an official Google or Dart project.
 * [ ] Add `Stream`, `StreamController`.
 
 ## Results
-To reproduce, `git clone`, and run `pub build benchmark`, and look in `build/`.
+To view the benchmark results yourself:
 
-| Name                            | SDK (`dart:async`)  | Experiment (`package:tinyasync`) | Difference          |
-| ------------------------------- | ------------------- | -------------------------------- | ------------------- |
-| (Root) scheduleMicrotask        | 63.6Kb              | 42.5Kb                           | **-21.1Kb** (33%)   |
-| (Root) Timer.run                | 63.3Kb              | 42.5Kb                           | **-20.8Kb** (33%)   |
-| (Fork) scheduleMicrotask        | 71.3Kb              | 48.8Kb                           | **-22.5Kb** (32%)   |
-| (Fork) Timer.run                | 71.2Kb              | 49.7Kb                           | **-21.5Kb** (31%)   |
+```bash
+$ git clone https://github.com/matanlurey/tinyasync.dart.git
+$ pub build benchmark
+$ dart tool/benchmark.dart
+```
+
+| Name                            | SDK (`dart:async`)  | Experiment (`package:tinyasync`) | Difference  |
+| ------------------------------- | ------------------- | -------------------------------- | ----------- |
+| (Root) scheduleMicrotask        | 64.2Kb              | 42.6Kb                           | **-21.6Kb** |
+| (Fork) scheduleMicrotask        | 71.9Kb              | 49.1Kb                           | **-22.8Kb** |
+| (Root) Timer.run                | 63.8Kb              | 42.9Kb                           | **-20.9Kb** |
+| (Fork) Timer.run                | 71.8Kb              | 50.1Kb                           | **-21.7Kb** |
 
 ## References
 * [Source code for `dart:async`](https://github.com/dart-lang/sdk/tree/master/sdk/lib/async)

@@ -4,7 +4,11 @@
 
 import 'package:tinyasync/tinyasync.dart';
 
+import '../_common.dart';
+
 /// Tests the size of using [scheduleMicrotask] from `package:tinyasync`.
 void main() {
-  scheduleMicrotask(() {});
+  benchAsync('Zone.current.fork().scheduleMicrotask', (onDone) {
+    Zone.current.fork().scheduleMicrotask(onDone);
+  });
 }

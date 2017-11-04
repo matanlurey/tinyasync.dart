@@ -4,7 +4,11 @@
 
 import 'dart:async';
 
-/// Tests the size of using [scheduleMicrotask] from `dart:async`.
+import '../_common.dart';
+
+/// Tests the size of using [Timer.run] from `dart:async`.
 void main() {
-  scheduleMicrotask(() {});
+  benchAsync('Timer.run', (onDone) {
+    Timer.run(onDone);
+  });
 }

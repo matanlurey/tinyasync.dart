@@ -2,9 +2,13 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'dart:async';
+import 'package:tinyasync/tinyasync.dart';
 
-/// Tests the size of using [scheduleMicrotask] from `dart:async`.
+import '../_common.dart';
+
+/// Tests the size of using [Timer.run] from `package:tinyasync`.
 void main() {
-  Zone.current.fork().scheduleMicrotask(() {});
+  benchAsync('Timer.run', (onDone) {
+    Timer.run(onDone);
+  });
 }
