@@ -24,13 +24,6 @@ Disclaimer: This is not an official Google or Dart project.
 * [ ] Add `Stream`, `StreamController`.
 
 ## Results
-To view the benchmark results yourself:
-
-```bash
-$ git clone https://github.com/matanlurey/tinyasync.dart.git
-$ pub build benchmark
-$ dart tool/benchmark.dart
-```
 
 | Name                            | SDK (`dart:async`)   | Experiment (`package:tinyasync`)   | Difference   |
 | ------------------------------- | -------------------- | ---------------------------------- | ------------ |
