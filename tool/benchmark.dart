@@ -46,7 +46,11 @@ Future<Null> main(List<String> args) async {
       final libs = _librariesInDumpInfo(
         JSON.decode(dump.readAsStringSync()) as Map<String, Object>,
       );
-      final sources = _collapsePackageUrls(_librariesToSources(libs)).toList();
+      final sources = _collapsePackageUrls(
+        _librariesToSources(libs),
+        size.inBytes,
+      )
+          .toList();
       sources.sort();
       const tiny = const Size(kilobytes: 1);
       for (final source in sources.reversed.where((s) => s.size >= tiny)) {
@@ -87,20 +91,26 @@ final _parser = new ArgParser()
     defaultsTo: false,
     help: 'Pause benchmarks in order to use the V8/Node profiler.',
   )
-  ..addFlag('dump',
-      abbr: 'd',
-      defaultsTo: true,
-      help: 'Emits what libraries from .info.json contributed code size.')
-  ..addOption('input',
-      abbr: 'i',
-      defaultsTo: 'build/benchmark/*/**.dart.js',
-      allowMultiple: true,
-      help: 'What pattern(s) to use to find .dart.js files.')
-  ..addOption('exclude',
-      abbr: 'e',
-      defaultsTo: 'build/benchmark/packages/**',
-      allowMultiple: true,
-      help: 'What pattern(s) to exclude when finding .dart.js files.');
+  ..addFlag(
+    'dump',
+    abbr: 'd',
+    defaultsTo: true,
+    help: 'Emits what libraries from .info.json contributed code size.',
+  )
+  ..addOption(
+    'input',
+    abbr: 'i',
+    defaultsTo: 'build/benchmark/*/**.dart.js',
+    allowMultiple: true,
+    help: 'What pattern(s) to use to find .dart.js files.',
+  )
+  ..addOption(
+    'exclude',
+    abbr: 'e',
+    defaultsTo: 'build/benchmark/packages/**',
+    allowMultiple: true,
+    help: 'What pattern(s) to exclude when finding .dart.js files.',
+  );
 
 final _tmpDir = Directory.systemTemp.createTempSync();
 
@@ -165,9 +175,14 @@ class _JsSource implements Comparable<_JsSource> {
   String toString() => '$url: $size';
 }
 
-Iterable<_JsSource> _collapsePackageUrls(Iterable<_JsSource> sources) sync* {
+Iterable<_JsSource> _collapsePackageUrls(
+  Iterable<_JsSource> sources,
+  int totalSize,
+) sync* {
+  var accountableSize = 0;
   final collapse = <String, List<_JsSource>>{};
   for (final source in sources) {
+    accountableSize += source.size.inBytes;
     if (source.url.startsWith('package:')) {
       final uri = Uri.parse(source.url);
       collapse.putIfAbsent(uri.pathSegments.first, () => []).add(source);
@@ -182,4 +197,9 @@ Iterable<_JsSource> _collapsePackageUrls(Iterable<_JsSource> sources) sync* {
       'package:$package',
     );
   }
+  // Add a synthetic "remaining" for compiler-only size (not from a library).
+  yield new _JsSource(
+    totalSize - accountableSize,
+    'compiler:dart2js',
+  );
 }
