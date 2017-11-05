@@ -43,7 +43,7 @@ Disclaimer: This is not an official Google or Dart project.
 To run the size calculations, first run `pub build benchmark`, and then:
 
 ```bash
-$ dart tool/benchmark.dart
+$ pub run jsbench
 ```
 
 To run the test cases using `dart2js`:
